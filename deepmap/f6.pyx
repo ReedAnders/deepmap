@@ -1,3 +1,5 @@
+from math import sin, sqrt
+
 def f6(param):
     '''Schaffer's F6 function'''
     para = param*10

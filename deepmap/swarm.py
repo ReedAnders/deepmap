@@ -16,8 +16,8 @@ class Particle:
 
 # Initialize swarm list of class Particle
 class Swarm:
-    def __init__(self, population_size=120, c1=2, c2=2):
-        self.population = [Particle() for particle in range(population_size)]
+    def __init__(self, population_size=120, dimensions=2, c1=2, c2=2):
+        self.population = [Particle(dimensions=dimensions) for particle in range(population_size)]
         self.population_size = population_size
         self.c1 = c1
         self.c2 = c2

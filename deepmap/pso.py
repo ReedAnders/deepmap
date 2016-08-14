@@ -1,32 +1,16 @@
-from optparse import OptionParser
 from random import random
-from math import sin, sqrt
-import numpy as np
 
 import swarm
-
-# MAKE MODULAR
-def f6(param):
-    '''Schaffer's F6 function'''
-    para = param*10
-    para = param[0:2]
-    num = (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) * \
-        (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) - 0.5
-    denom = (1.0 + 0.001 * ((para[0] * para[0]) + (para[1] * para[1]))) * \
-            (1.0 + 0.001 * ((para[0] * para[0]) + (para[1] * para[1])))
-    f6 =  0.5 - (num/denom)
-    errorf6 = 1 - f6
-    return f6, errorf6;
+# from f6 import f6
+import benchmark
 
 # PSO Algorithm
-def pso(swarm, iter_max=100000, err_crit = 0.00001, index=1):
-
-    # err = 999999999
+def pso(func, swarm, iter_max=100000, err_crit = 0.00001, index=1):
 
     while index < iter_max:
 
         for p in swarm.population:
-            fitness, err = f6(p.params)
+            fitness, err = func(p.params)
 
             if fitness > p.fitness:
                 p.fitness = fitness
@@ -55,9 +39,23 @@ def pso(swarm, iter_max=100000, err_crit = 0.00001, index=1):
     print 'gbest params    : ', swarm.gBestSolution
     print 'iterations      : ', index
 
-# MAIN
+
 if __name__ == "__main__":
 
-    sw = swarm.Swarm(population_size=1000)
+    import argparse
+    parser = argparse.ArgumentParser(description='Run PSO on a benchmark')
+    parser.add_argument('--pop', default=120, type=int,
+                        help='swarm population size')
+    parser.add_argument('--d', default=2, type=int,
+                        help='solution dimension size')
+    parser.add_argument('--c', default=2.0, type=float,
+                        help='particle acceration constant')
+    args = parser.parse_args()
 
-    pso(sw)
+    sw = swarm.Swarm(population_size=args.pop, \
+                        dimensions=args.d, c1=args.c, c2=args.c)
+
+    func = benchmark.Benchmark().f6
+    # func = f6
+
+    pso(func, sw)
