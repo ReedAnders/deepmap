@@ -1,0 +1,54 @@
+import unittest
+import numpy as np
+from deepmap import swarm, nn
+
+class TestStringMethods(unittest.TestCase):
+
+    def test_swarm(self):
+        sw = swarm.Swarm()
+        self.assertEqual(120, len(sw.population))
+        self.assertEqual(type(0.0), type(sw.c1))
+
+    def test_particle(self):
+        p = swarm.Particle(10)
+        self.assertEqual(p.params[0], p.pBest[0])
+        self.assertEqual(p.dimensions, 10)
+
+    def test_nn(self):
+        n1 = nn.NodeMap(input_node_population=12, output_node_population=1, \
+            latent_node_population=400)
+        self.assertEqual(n1.all_nodes[0].name,n1.input_nodes[0].name)
+        self.assertEqual(n1.all_nodes[-1].name,n1.latent_nodes[-1].name)
+
+    def test_nn_constructor(self):
+        n1 = nn.NodeMap(input_node_population=12, output_node_population=1, \
+            latent_node_population=400)
+        n1.construct_map()
+
+        def mutual_nodes(position):
+            node_1 = n1.all_nodes[position]
+            node_2 = None
+            contains = False
+
+            for neighbor in node_1.neighbors:
+                if neighbor[1] == True:
+                    node_2 = neighbor[0]
+
+            for node in n1.all_nodes:
+                if node.name == node_2:
+                    for neighbor in node.neighbors:
+                        if neighbor[1] == True and neighbor[0] == node_1.name:
+                            contains = True
+                            break
+
+            return contains
+
+        i = 0
+        while i < 1000:
+            position = np.random.randint(len(n1.all_nodes)-1)
+            r1 = mutual_nodes(position)
+            self.assertTrue(r1)
+            i += 1
+
+if __name__ == '__main__':
+    unittest.main()

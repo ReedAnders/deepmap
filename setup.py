@@ -2,7 +2,7 @@
 # From: https://github.com/ReedAnders/deepmap
 # License: MIT BY https://opensource.org/licenses/MIT
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='deepmap',
       version='0.1.0',
@@ -12,4 +12,5 @@ setup(name='deepmap',
               'deepmap = deepmap.__main__:main'
           ]
       },
+      test_suite = 'test',
       )

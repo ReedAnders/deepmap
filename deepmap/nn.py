@@ -23,10 +23,10 @@ class NodeMap:
         for node in self.all_nodes:
             node.find_neighbors(self.coordinate_map)
 
-        pickle.dump( self.coordinate_map, open( "pickles/coordinate_map.p", "wb" ) )
-        pickle.dump( self.input_nodes, open( "pickles/input_nodes.p", "wb" ) )
-        pickle.dump( self.output_nodes, open( "pickles/output_nodes.p", "wb" ) )
-        pickle.dump( self.latent_nodes, open( "pickles/latent_nodes.p", "wb" ) )
+        # pickle.dump( self.coordinate_map, open( "pickles/coordinate_map.p", "wb" ) )
+        # pickle.dump( self.input_nodes, open( "pickles/input_nodes.p", "wb" ) )
+        # pickle.dump( self.output_nodes, open( "pickles/output_nodes.p", "wb" ) )
+        # pickle.dump( self.latent_nodes, open( "pickles/latent_nodes.p", "wb" ) )
 
 
     def evaluate_topology(self, param):
