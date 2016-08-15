@@ -6,7 +6,6 @@ class Benchmark:
 
     def f6(self, param):
         '''Schaffer's F6 function'''
-        para = param*10
         para = param[0:2]
         num = (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) * \
             (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) - 0.5

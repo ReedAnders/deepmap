@@ -5,7 +5,7 @@ import swarm
 import benchmark
 
 # PSO Algorithm
-def pso(func, swarm, iter_max=100000, err_crit = 0.00001, index=1):
+def pso(func, swarm, iter_max=100000, err_crit = 0.000001, index=1):
 
     while index < iter_max:
 
@@ -50,6 +50,10 @@ if __name__ == "__main__":
                         help='solution dimension size')
     parser.add_argument('--c', default=2.0, type=float,
                         help='particle acceration constant')
+    parser.add_argument('--err_crit', default=0.00001, type=float,
+                        help='error criteria for stopping PSO')
+    parser.add_argument('--iter_max', default=1000, type=float,
+                        help='maximum iterations for stopping PSO')
     args = parser.parse_args()
 
     sw = swarm.Swarm(population_size=args.pop, \
@@ -58,4 +62,4 @@ if __name__ == "__main__":
     func = benchmark.Benchmark().f6
     # func = f6
 
-    pso(func, sw)
+    pso(func, sw, iter_max=args.iter_max, err_crit=args.err_crit)
