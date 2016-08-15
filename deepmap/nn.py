@@ -4,6 +4,7 @@ from random import random
 
 class NodeMap:
     def __init__(self, input_node_population=12, output_node_population=1, latent_node_population=400):
+        self.complete_map = []
         self.input_nodes = [InputNode() for node in range(input_node_population)]
         self.output_nodes = [Node() for node in range(output_node_population)]
         self.latent_nodes = [Node() for node in range(latent_node_population)]
@@ -12,6 +13,10 @@ class NodeMap:
     #     return 'NNetwork(input_nodes=%r, output_nodes=%r, latent_nodes=%r)' \
     #             % (self.input_node_population, self.output_node_population, \
     #                 self.latent_node_population)
+
+    def construct_map(self):
+        for node in self.input_nodes + self.output_nodes + self.latent_nodes:
+            self.complete_map.append(node.coordinates)
 
     def testNN(self, param):
 
@@ -35,9 +40,11 @@ class Node:
     def __init__(self, dimensions=3):
         self.coordinates = np.array([random() for i in range(dimensions)])
         self.value = 0.0
+        self.neighbors = None
 
     def __repr__(self):
-        return 'Node(%r, value=%r)' % (self.coordinates, self.value)
+        return 'Node(%r, value=%r, neighbors=%r)' % (self.coordinates, \
+            self.value, self.neighbors)
 
 class InputNode(Node):
     def __init__(self):
@@ -47,3 +54,5 @@ class InputNode(Node):
     def __repr__(self):
         return 'Node(%r, value=%r, neighbors=%r)' % (self.coordinates, \
             self.value, self.neighbors)
+
+
