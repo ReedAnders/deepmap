@@ -27,24 +27,27 @@ class TestStringMethods(unittest.TestCase):
 
         def mutual_nodes(position):
             node_1 = n1.all_nodes[position]
-            node_2 = None
+            node_2 = []
             contains = False
 
             for neighbor in node_1.neighbors:
                 if neighbor[1] == True:
-                    node_2 = neighbor[0]
+                    node_2.append(neighbor[0])
 
-            for node in n1.all_nodes:
-                if node.name == node_2:
-                    for neighbor in node.neighbors:
-                        if neighbor[1] == True and neighbor[0] == node_1.name:
-                            contains = True
-                            break
+            # print node_2
+            for index in node_2:
+                for node in n1.all_nodes:
+                    if node.name == index:
+                        for neighbor in node.neighbors:
+                            if neighbor[1] == True and \
+                             neighbor[0] == node_1.name:
+                                contains = True
+                                break
 
             return contains
 
         i = 0
-        while i < 1000:
+        while i < 2000:
             position = np.random.randint(len(n1.all_nodes)-1)
             r1 = mutual_nodes(position)
             self.assertTrue(r1)
