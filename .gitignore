@@ -1,2 +1,3 @@
 *.pyc
 DeepMap.tar.gz
+/pickles

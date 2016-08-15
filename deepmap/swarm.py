@@ -1,3 +1,7 @@
+# Copyright (C) 2016 Reed Anderson.
+# From: https://github.com/ReedAnders/deepmap
+# License: MIT BY https://opensource.org/licenses/MIT
+
 import numpy as np
 from random import random
 
@@ -27,3 +31,43 @@ class Swarm:
     def __repr__(self):
         return 'Swarm(population_size=%r, gBestFitness=%r)' \
             % (self.population_size, self.gBestFitness)
+
+# Metaheuristic optmization methods
+class PSO:
+    def __init__(self, iter_max=100000, err_crit = 0.000001):
+        self.iter_max = iter_max
+        self.err_crit = err_crit
+
+    def optimize(self, func, swarm, index=1):
+
+        while index < self.iter_max:
+
+            for p in swarm.population:
+                fitness, err = func(p.params)
+
+                if fitness > p.fitness:
+                    p.fitness = fitness
+                    p.pBest = p.params
+
+                if fitness > swarm.gBestFitness:
+                    swarm.gBestSolution = p.params
+                    swarm.gBestFitness = p.fitness
+
+                v = p.v + swarm.c1 * random() * (p.pBest - p.params) \
+                        + swarm.c2 * random() * (swarm.gBestSolution - p.params)
+
+                p.params = p.params + v
+
+                index += 1
+
+            if err < self.err_crit:
+                break
+
+            #progress bar. '.' = 10%
+            if index % (self.iter_max/10) == 0:
+                print '.'
+
+        print 'RESULTS\n', '-'*7
+        print 'gbest fitness   : ', swarm.gBestFitness
+        print 'gbest params    : ', swarm.gBestSolution
+        print 'iterations      : ', index

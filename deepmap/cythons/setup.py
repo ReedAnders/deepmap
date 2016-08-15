@@ -2,6 +2,6 @@ from distutils.core import setup
 from Cython.Build import cythonize
 
 setup(
-  name = 'Swarm Class',
-  ext_modules = cythonize("swarm.pyx"),
+  name = 'Schaffers F6 function',
+  ext_modules = cythonize("f6.pyx"),
 )
