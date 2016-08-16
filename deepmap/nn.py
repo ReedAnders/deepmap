@@ -23,11 +23,18 @@ class NodeMap:
         for node in self.all_nodes:
             node.find_neighbors(self.coordinate_map)
 
+        for node in self.all_nodes:
+            for index in node.true_neighbor_index:
+                node.input_values.append(self.all_nodes[index].value)
+
         # pickle.dump( self.coordinate_map, open( "pickles/coordinate_map.p", "wb" ) )
         # pickle.dump( self.input_nodes, open( "pickles/input_nodes.p", "wb" ) )
         # pickle.dump( self.output_nodes, open( "pickles/output_nodes.p", "wb" ) )
         # pickle.dump( self.latent_nodes, open( "pickles/latent_nodes.p", "wb" ) )
 
+
+    def evaluate(self, param):
+        pass
 
     def evaluate_topology(self, param):
 
@@ -50,14 +57,10 @@ class NodeMap:
     def evaluate_weights(self, param):
 
         # Trim parameters
-        para = param[0:2]
+
 
         # Evaluate function
-        num = (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) * \
-            (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) - 0.5
-        denom = (1.0 + 0.001 * ((para[0] * para[0]) + (para[1] * para[1]))) * \
-                (1.0 + 0.001 * ((para[0] * para[0]) + (para[1] * para[1])))
-        f6 =  0.5 - (num/denom)
+
 
         # Calculate error
         errorf6 = 1 - f6
@@ -70,16 +73,23 @@ class Node:
     def __init__(self, dimensions=3):
         self.name = binascii.b2a_hex(os.urandom(8))
         self.coordinates = np.array([random() for i in range(dimensions)])
-        self.value = 0.0
+        self.value = random()
         self.neighbors = []
+        self.true_neighbor_index = []
+        self.input_values = []
 
     def __repr__(self):
         return 'Node(%r, value=%r, neighbors=%r)' % (self.coordinates, \
             self.value, self.neighbors)
 
     def find_neighbors(self, coordinate_map):
-        for node in coordinate_map:
-            result = 1 if np.linalg.norm(self.coordinates-node[1]) < 0.1 else 0
-            self.neighbors.append((node[0],result))
+        for index, node in enumerate(coordinate_map):
+            if np.linalg.norm(self.coordinates-node[1]) < 0.1:
+                self.true_neighbor_index.append(index)
+                self.neighbors.append((node[0],True))
+            else:
+                self.neighbors.append((node[0],False))
 
-
+    def sigmoid(self, weights):
+        x = sum([w*v for w,v in zip(weights, self.input_values)])
+        self.value = 1 / (1 + exp(-x))

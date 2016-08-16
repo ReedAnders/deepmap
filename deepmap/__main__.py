@@ -7,6 +7,7 @@ import argparse
 
 import swarm
 import benchmark
+import nn
 
 def main():
 
@@ -23,11 +24,15 @@ def main():
                         help='maximum iterations for stopping PSO')
     args = parser.parse_args()
 
+    # func = nn.NodeMap().evaluate
     func = benchmark.Benchmark().f6
+
     sw = swarm.Swarm(population_size=args.pop, \
                         dimensions=args.d, c1=args.c, c2=args.c)
 
-    swarm.PSO(iter_max=args.iter_max, err_crit=args.err_crit).optimize(func, sw)
+    pso = swarm.PSO(iter_max=args.iter_max, err_crit=args.err_crit)
+
+    pso.optimize(func, sw)
 
 if __name__ == "__main__":
     main()
