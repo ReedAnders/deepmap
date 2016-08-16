@@ -32,27 +32,17 @@ class NodeMap:
         # pickle.dump( self.output_nodes, open( "pickles/output_nodes.p", "wb" ) )
         # pickle.dump( self.latent_nodes, open( "pickles/latent_nodes.p", "wb" ) )
 
-    # # Should just be (self, labels)
-    # def error(self, training_patterns):
-    #     error = None
-    #     pattern_error = []
-    #     n_training_patterns = float(len(training_patterns))
+    def calculate_dimensions(self):
+        # Maximum number of connections -> topology
+        # Maximum number of connections -> weights
 
-    #     # i = [float,float,float,float,float,float,float, .. , label]
-    #     for i in training_patterns:
-    #         n_labels = len(self.output_nodes)
-    #         inputs = i[-n_labels:]
+        n_params = 0
 
-    #         correct_labels = i[:-n_labels]
-    #         predicted_labels = self.predict(inputs)
+        for node in self.all_nodes:
+            n_params += len(node.true_neighbor_index)
 
-    #         pattern_error.append(sum([(y-o)**2 for y,o in \
-    #             zip(correct_labels, predicted_labels)]))
+        return n_params*2
 
-    #     error = 1/n_training_patterns * sum(pattern_error)
-    #     return error
-
-# NEW
     def error(self, correct_labels, predicted_labels):
         error = None
         pattern_error = []
@@ -66,8 +56,12 @@ class NodeMap:
         error = 1.0/n_training_patterns * sum(pattern_error)
         return error
 
-    def predict(self, training_patterns, param):
-        pass
+    def train(self, training_patterns, param):
+        # p_len = len(param)
+        # self.evaluate_topology([:param])
+        # self.evaluate_weights([param:])
+
+        error = self.error(c_labels, p_labels)
 
     def evaluate_topology(self, param):
 
@@ -100,7 +94,6 @@ class NodeMap:
 
         # Return solution and error
         return f6, errorf6
-
 
 class Node:
     def __init__(self, dimensions=3):
