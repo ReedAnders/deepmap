@@ -11,8 +11,8 @@ class NodeMap:
     def __init__(self, input_node_population=12, output_node_population=1, latent_node_population=400):
         self.coordinate_map = []
         self.input_nodes = [Node() for node in range(input_node_population)]
-        self.output_nodes = [Node() for node in range(output_node_population)]
-        self.latent_nodes = [Node() for node in range(latent_node_population)]
+        self.output_nodes = [LatentNode() for node in range(output_node_population)]
+        self.latent_nodes = [LatentNode() for node in range(latent_node_population)]
         self.all_nodes = self.input_nodes + self.output_nodes + self.latent_nodes
 
 
@@ -23,7 +23,7 @@ class NodeMap:
         for node in self.all_nodes:
             node.find_neighbors(self.coordinate_map)
 
-        for node in self.all_nodes:
+        for node in self.output_nodes + self.latent_nodes:
             for index in node.true_neighbor_index:
                 node.input_values.append(self.all_nodes[index].value)
 
@@ -73,23 +73,41 @@ class Node:
     def __init__(self, dimensions=3):
         self.name = binascii.b2a_hex(os.urandom(8))
         self.coordinates = np.array([random() for i in range(dimensions)])
-        self.value = random()
         self.neighbors = []
         self.true_neighbor_index = []
-        self.input_values = []
+        self.optimal_neighbor_set = set()
+        self.value = 0.0
 
-    def __repr__(self):
-        return 'Node(%r, value=%r, neighbors=%r)' % (self.coordinates, \
-            self.value, self.neighbors)
+    # def __repr__(self):
+    #     return 'Node(%r, value=%r, neighbors=%r)' % (self.coordinates, \
+    #         self.value, self.neighbors)
 
     def find_neighbors(self, coordinate_map):
         for index, node in enumerate(coordinate_map):
             if np.linalg.norm(self.coordinates-node[1]) < 0.1:
                 self.true_neighbor_index.append(index)
-                self.neighbors.append((node[0],True))
+                self.neighbors.append((node,True))
             else:
-                self.neighbors.append((node[0],False))
+                self.neighbors.append((node,False))
 
-    def sigmoid(self, weights):
+    # Two parameters between -1, 1
+    def eval_neighbors(self, lower_bound, upper_bound):
+        for index in self.true_neighbor_index:
+            dist = np.linalg.norm(self.coordinates-self.neighbors[index][0][1])
+            if dist > lower_bound and dist < upper_bound:
+                self.optimal_neighbor_set.add(index)
+
+class LatentNode(Node):
+    def __init__(self):
+        Node.__init__(self)
+        self.value = random()
+        self.input_values = []
+
+    # def __repr__(self):
+    #     return 'Node(%r, value=%r, neighbors=%r)' % (self.coordinates, \
+    #         self.value, self.neighbors)
+
+    # Multiple parameters for n weights -1, 1
+    def eval_sigmoid(self, weights):
         x = sum([w*v for w,v in zip(weights, self.input_values)])
         self.value = 1 / (1 + exp(-x))
