@@ -53,5 +53,15 @@ class TestStringMethods(unittest.TestCase):
             self.assertTrue(r1)
             i += 1
 
+    def test_nn_error(self):
+        n1 = nn.NodeMap()
+        c_labels = [0,1,0,1]
+        p_labels = [0,1,0,0]
+
+        self.assertEqual(n1.error(c_labels, p_labels),1)
+
+        p_labels = [0,1,0,1]
+        self.assertEqual(n1.error(c_labels, p_labels),0)
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

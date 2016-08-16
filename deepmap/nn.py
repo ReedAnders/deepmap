@@ -32,25 +32,42 @@ class NodeMap:
         # pickle.dump( self.output_nodes, open( "pickles/output_nodes.p", "wb" ) )
         # pickle.dump( self.latent_nodes, open( "pickles/latent_nodes.p", "wb" ) )
 
+    # # Should just be (self, labels)
+    # def error(self, training_patterns):
+    #     error = None
+    #     pattern_error = []
+    #     n_training_patterns = float(len(training_patterns))
 
-    def evaluate(self, param, training_patterns):
+    #     # i = [float,float,float,float,float,float,float, .. , label]
+    #     for i in training_patterns:
+    #         n_labels = len(self.output_nodes)
+    #         inputs = i[-n_labels:]
+
+    #         correct_labels = i[:-n_labels]
+    #         predicted_labels = self.predict(inputs)
+
+    #         pattern_error.append(sum([(y-o)**2 for y,o in \
+    #             zip(correct_labels, predicted_labels)]))
+
+    #     error = 1/n_training_patterns * sum(pattern_error)
+    #     return error
+
+# NEW
+    def error(self, correct_labels, predicted_labels):
         error = None
-        pattern_error = None
-        n_training_patterns = float(len(training_patterns))
+        pattern_error = []
+        n_training_patterns = len(correct_labels)
 
-        # i = [float,float,float,float,float,float,float, .. , label]
-        for i in training_patterns:
-            n_labels = len(self.output_nodes)
-            inputs = i[-n_labels:]
+        for i in range(n_training_patterns):
 
-            correct_labels = i[:-n_labels]
-            predicted_labels = predict(inputs)
+            pattern_error.append(sum([(y-o)**2 for y,o in \
+                zip(correct_labels, predicted_labels)]))
 
-            pattern_error = sum([(y-o)**2 for y,o in \
-                zip(correct_labels, predicted_labels)])
+        error = 1.0/n_training_patterns * sum(pattern_error)
+        return error
 
-        error = 1/n_training_patterns * sum(pattern_error)
-
+    def predict(self, training_patterns, param):
+        pass
 
     def evaluate_topology(self, param):
 
