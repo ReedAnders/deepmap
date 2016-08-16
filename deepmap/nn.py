@@ -33,8 +33,24 @@ class NodeMap:
         # pickle.dump( self.latent_nodes, open( "pickles/latent_nodes.p", "wb" ) )
 
 
-    def evaluate(self, param):
-        pass
+    def evaluate(self, param, training_patterns):
+        error = None
+        pattern_error = None
+        n_training_patterns = float(len(training_patterns))
+
+        # i = [float,float,float,float,float,float,float, .. , label]
+        for i in training_patterns:
+            n_labels = len(self.output_nodes)
+            inputs = i[-n_labels:]
+
+            correct_labels = i[:-n_labels]
+            predicted_labels = predict(inputs)
+
+            pattern_error = sum([(y-o)**2 for y,o in \
+                zip(correct_labels, predicted_labels)])
+
+        error = 1/n_training_patterns * sum(pattern_error)
+
 
     def evaluate_topology(self, param):
 
