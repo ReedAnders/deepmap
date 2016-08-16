@@ -27,13 +27,12 @@ class TestStringMethods(unittest.TestCase):
 
         def mutual_nodes(position):
             node_1 = n1.all_nodes[position]
-            print node_1, position
             node_2 = []
             contains = False
 
             for neighbor in node_1.neighbors:
                 if neighbor[1] == True:
-                    node_2.append(neighbor[0])
+                    node_2.append(neighbor[0][0])
 
             # print node_2
             for index in node_2:
@@ -41,7 +40,7 @@ class TestStringMethods(unittest.TestCase):
                     if node.name == index:
                         for neighbor in node.neighbors:
                             if neighbor[1] == True and \
-                             neighbor[0] == node_1.name:
+                             neighbor[0][0] == node_1.name:
                                 contains = True
                                 break
 
