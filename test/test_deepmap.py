@@ -27,6 +27,7 @@ class TestStringMethods(unittest.TestCase):
 
         def mutual_nodes(position):
             node_1 = n1.all_nodes[position]
+            print node_1, position
             node_2 = []
             contains = False
 
@@ -54,4 +55,4 @@ class TestStringMethods(unittest.TestCase):
             i += 1
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
