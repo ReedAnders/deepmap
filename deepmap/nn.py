@@ -9,7 +9,7 @@ from math import exp
 from random import random
 
 class NodeMap:
-    def __init__(self, input_node_population=12, output_node_population=1, latent_node_population=10):
+    def __init__(self, input_node_population=12, output_node_population=1, latent_node_population=400):
         self.coordinate_map = []
         self.input_nodes = [InputNode() for node in range(input_node_population)]
         self.output_nodes = [OutputNode() for node in range(output_node_population)]
@@ -59,6 +59,7 @@ class NodeMap:
         n_training_patterns = len(training_patterns)
 
         for i in training_patterns:
+
             n_labels = len(self.output_nodes)
             inputs = i[:-n_labels]
 
@@ -75,6 +76,9 @@ class NodeMap:
 
         p_labels = []
 
+        for index, node in enumerate(self.input_nodes):
+            node.value = float(data[index])
+
         # Trim parameters
         p_len = len(param)
         t_len = len(self.latent_nodes + self.output_nodes) * 2
@@ -86,10 +90,10 @@ class NodeMap:
         # Evaluate function
         for node in self.latent_nodes + self.output_nodes:
             self.evaluate_weights(w_para)
-            # t_para = deque(param[w_len-2:])
-            # for node in self.latent_nodes + self.output_nodes:
-            #     node_topo_params = [t_para.popleft() for _i in range(2)]
-            #     node.eval_neighbors(node_topo_params[0],node_topo_params[1])
+            t_para = deque(param[w_len-2:])
+            for node in self.latent_nodes + self.output_nodes:
+                node_topo_params = [t_para.popleft() for _i in range(2)]
+                node.eval_neighbors(node_topo_params[0],node_topo_params[1])
 
         # Return predicted labels
         p_labels = [node.value for node in self.output_nodes]
@@ -121,7 +125,7 @@ class Node:
 
     def find_neighbors(self, coordinate_map):
         for index, node in enumerate(coordinate_map):
-            if np.linalg.norm(self.coordinates-node[1]) < 0.3:
+            if np.linalg.norm(self.coordinates-node[1]) < 0.1:
                 self.true_neighbor_index.append(index)
                 self.neighbors.append((node,True))
             else:
