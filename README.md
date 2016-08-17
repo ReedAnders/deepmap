@@ -5,6 +5,8 @@ Nodes (i.e., neurons) are randomly initialized on a plane; node connections are 
 chosen parameter for maximum distance in Euclidean space. 
 
 ## XOR Example
-$ git clone https://github.com/ReedAnders/deepmap \
-$ cd deepmap \
-$ python -m deepmap \
+$ git clone https://github.com/ReedAnders/deepmap
+
+$ cd deepmap
+
+$ python -m deepmap 
