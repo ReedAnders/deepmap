@@ -38,12 +38,12 @@ class PSO:
         self.iter_max = iter_max
         self.err_crit = err_crit
 
-    def optimize(self, func, swarm, index=1):
+    def optimize(self, func, swarm, data, index=1):
 
         while index < self.iter_max:
 
             for p in swarm.population:
-                fitness, err = func(p.params)
+                fitness, err = func(data, p.params)
 
                 if fitness > p.fitness:
                     p.fitness = fitness

@@ -3,6 +3,7 @@
 # License: MIT BY https://opensource.org/licenses/MIT
 
 import pickle, os, binascii
+from collections import deque
 import numpy as np
 from math import exp
 from random import random
@@ -23,9 +24,7 @@ class NodeMap:
         for node in self.all_nodes:
             node.find_neighbors(self.coordinate_map)
 
-        for node in self.output_nodes + self.latent_nodes:
-            for index in node.true_neighbor_index:
-                node.input_values.append(self.all_nodes[index].value)
+        self.update_input_values()
 
         # pickle.dump( self.coordinate_map, open( "pickles/coordinate_map.p", "wb" ) )
         # pickle.dump( self.input_nodes, open( "pickles/input_nodes.p", "wb" ) )
@@ -33,15 +32,14 @@ class NodeMap:
         # pickle.dump( self.latent_nodes, open( "pickles/latent_nodes.p", "wb" ) )
 
     def calculate_dimensions(self):
-        # Maximum number of connections -> topology
-        # Maximum number of connections -> weights
 
         n_params = 0
 
         for node in self.all_nodes:
+            n_params += 2
             n_params += len(node.true_neighbor_index)
 
-        return n_params*2
+        return n_params
 
     def error(self, correct_labels, predicted_labels):
         error = None
@@ -50,50 +48,67 @@ class NodeMap:
 
         for i in range(n_training_patterns):
 
-            pattern_error.append(sum([(y-o)**2 for y,o in \
-                zip(correct_labels, predicted_labels)]))
+            _sum = sum([(y-o)**2 for y,o in zip(correct_labels, predicted_labels)])
+            pattern_error.append(_sum)
 
         error = 1.0/n_training_patterns * sum(pattern_error)
         return error
 
     def train(self, training_patterns, param):
-        # p_len = len(param)
-        # self.evaluate_topology([:param])
-        # self.evaluate_weights([param:])
+
+        n_training_patterns = len(training_patterns)
+
+        for i in training_patterns:
+            n_labels = len(self.output_nodes)
+            inputs = i[:-n_labels]
+
+            c_labels = i[-n_labels:]
+            p_labels = self.evaluate_topology(inputs, param)
 
         error = self.error(c_labels, p_labels)
+        fitness = 1 - error
 
-    def evaluate_topology(self, param):
+        print 'ERROR: %r' % (error)
+        return error, fitness
+
+    def evaluate_topology(self, data, param):
+
+        p_labels = []
 
         # Trim parameters
-        para = param[0:2]
+        p_len = len(param)
+        t_len = len(self.latent_nodes + self.output_nodes) * 2
+        w_len = p_len - t_len
+
+        w_para = param[:w_len]
+        # t_para = deque(param[w_len-2:])
 
         # Evaluate function
-        num = (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) * \
-            (sin(sqrt((para[0] * para[0]) + (para[1] * para[1])))) - 0.5
-        denom = (1.0 + 0.001 * ((para[0] * para[0]) + (para[1] * para[1]))) * \
-                (1.0 + 0.001 * ((para[0] * para[0]) + (para[1] * para[1])))
-        f6 =  0.5 - (num/denom)
+        for node in self.latent_nodes + self.output_nodes:
+            self.evaluate_weights(w_para)
+            t_para = deque(param[w_len-2:])
+            for node in self.latent_nodes + self.output_nodes:
+                node_topo_params = [t_para.popleft() for _i in range(2)]
+                node.eval_neighbors(node_topo_params[0],node_topo_params[1])
 
-        # Calculate error
-        errorf6 = 1 - f6
-
-        # Return solution and error
-        return f6, errorf6
+        # Return predicted labels
+        p_labels = [node.value for node in self.output_nodes]
+        return p_labels
 
     def evaluate_weights(self, param):
+        w_para = deque(param)
+        for node in self.latent_nodes + self.output_nodes:
+                neighbors = len(node.true_neighbor_index)
+                node_weight_params = [w_para.popleft() for _i in range(neighbors)]
+                node.eval_sigmoid(node_weight_params)
+        self.update_input_values()
 
-        # Trim parameters
 
+    def update_input_values(self):
+        for node in self.output_nodes + self.latent_nodes:
+            for index in node.true_neighbor_index:
+                node.input_values.append(self.all_nodes[index].value)
 
-        # Evaluate function
-
-
-        # Calculate error
-        errorf6 = 1 - f6
-
-        # Return solution and error
-        return f6, errorf6
 
 class Node:
     def __init__(self, dimensions=3):

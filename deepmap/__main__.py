@@ -14,8 +14,8 @@ def main():
     parser = argparse.ArgumentParser(description='Run PSO on a benchmark')
     parser.add_argument('--pop', default=120, type=int,
                         help='swarm population size')
-    parser.add_argument('--d', default=2, type=int,
-                        help='solution dimension size')
+    # parser.add_argument('--d', default=2, type=int,
+    #                     help='solution dimension size')
     parser.add_argument('--c', default=2.0, type=float,
                         help='particle acceration constant')
     parser.add_argument('--err_crit', default=0.00001, type=float,
@@ -24,15 +24,25 @@ def main():
                         help='maximum iterations for stopping PSO')
     args = parser.parse_args()
 
+
+    data = [[1,1,0],[1,0,1],[0,1,1],[0,0,0]]
+    input_nodes = 2
+
     # func = nn.NodeMap().evaluate
-    func = benchmark.Benchmark().f6
+    # func = benchmark.Benchmark().f6
+    n1 = nn.NodeMap(input_node_population=input_nodes)
+    n1.construct_map()
+
+    d = n1.calculate_dimensions()
+
+    func = n1.train
 
     sw = swarm.Swarm(population_size=args.pop, \
-                        dimensions=args.d, c1=args.c, c2=args.c)
+                        dimensions=d, c1=args.c, c2=args.c)
 
     pso = swarm.PSO(iter_max=args.iter_max, err_crit=args.err_crit)
 
-    pso.optimize(func, sw)
+    pso.optimize(func, sw, data)
 
 if __name__ == "__main__":
     main()
