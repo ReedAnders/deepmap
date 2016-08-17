@@ -30,7 +30,7 @@ def main():
 
     # func = nn.NodeMap().evaluate
     # func = benchmark.Benchmark().f6
-    n1 = nn.NodeMap(input_node_population=input_nodes)
+    n1 = nn.NodeMap(input_node_population=input_nodes, latent_node_population=10)
     n1.construct_map()
 
     d = n1.calculate_dimensions()

@@ -43,7 +43,7 @@ class PSO:
         while index < self.iter_max:
 
             for p in swarm.population:
-                fitness, err = func(data, p.params)
+                err, fitness = func(data, p.params)
 
                 if fitness > p.fitness:
                     p.fitness = fitness
@@ -59,6 +59,8 @@ class PSO:
                 p.params = p.params + v
 
                 index += 1
+
+                print 'swarm.gBestFitness: ', swarm.gBestFitness
 
             if err < self.err_crit:
                 break
