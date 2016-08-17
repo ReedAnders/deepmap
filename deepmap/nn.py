@@ -91,9 +91,9 @@ class NodeMap:
         for node in self.latent_nodes + self.output_nodes:
             self.evaluate_weights(w_para)
             t_para = deque(param[w_len-2:])
-            for node in self.latent_nodes + self.output_nodes:
-                node_topo_params = [t_para.popleft() for _i in range(2)]
-                node.eval_neighbors(node_topo_params[0],node_topo_params[1])
+            # for node in self.latent_nodes + self.output_nodes:
+            #     node_topo_params = [t_para.popleft() for _i in range(2)]
+            #     node.eval_neighbors(node_topo_params[0],node_topo_params[1])
 
         # Return predicted labels
         p_labels = [node.value for node in self.output_nodes]
@@ -125,7 +125,7 @@ class Node:
 
     def find_neighbors(self, coordinate_map):
         for index, node in enumerate(coordinate_map):
-            if np.linalg.norm(self.coordinates-node[1]) < 0.1:
+            if np.linalg.norm(self.coordinates-node[1]) < 0.3:
                 self.true_neighbor_index.append(index)
                 self.neighbors.append((node,True))
             else:

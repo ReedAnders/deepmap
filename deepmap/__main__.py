@@ -4,6 +4,7 @@
 
 from random import random
 import argparse
+import csv
 
 import swarm
 import benchmark
@@ -18,14 +19,22 @@ def main():
     #                     help='solution dimension size')
     parser.add_argument('--c', default=2.0, type=float,
                         help='particle acceration constant')
-    parser.add_argument('--err_crit', default=0.00001, type=float,
+    parser.add_argument('--err_crit', default=0.0000000001, type=float,
                         help='error criteria for stopping PSO')
-    parser.add_argument('--iter_max', default=1000, type=float,
+    parser.add_argument('--iter_max', default=10000, type=float,
                         help='maximum iterations for stopping PSO')
     args = parser.parse_args()
 
 
-    data = [[1,1,0],[1,0,1],[0,1,1],[0,0,0]]
+    data = []
+    with open('data/data.csv','rb') as csvfile:
+        reader = csv.reader(csvfile)
+        for index, row in enumerate(reader):
+            if index == 0:
+                continue
+            row = [float(i) for i in row]
+            data.append(row)
+
     input_nodes = 2
 
     # func = nn.NodeMap().evaluate
