@@ -23,11 +23,13 @@ def main():
                         help='error criteria for stopping PSO')
     parser.add_argument('--iter_max', default=10000, type=float,
                         help='maximum iterations for stopping PSO')
+    parser.add_argument('--data', required=True, type=str,
+                        help='required data csv')
     args = parser.parse_args()
 
 
     data = []
-    with open('data/data.csv','rb') as csvfile:
+    with open(args.data,'rb') as csvfile:
         reader = csv.reader(csvfile)
         for index, row in enumerate(reader):
             if index == 0:
