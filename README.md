@@ -2,7 +2,7 @@
 
 Implemention of a particle swarm optimized multidimensional neural network (so many syllables!!). 
 Nodes (i.e., neurons) are randomly initialized in a multidimensional space; node connections are within a 
-chosen parameter for maximum distance in Euclidean space. 
+user defined parameter for maximum distance in Euclidean space. 
 
 ## XOR Example
 ```
