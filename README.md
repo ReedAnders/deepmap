@@ -1,8 +1,8 @@
 # deepmap
 
-Implemention of a particle swarm optimized multidimensional neural network (so many syllables!!).
-Nodes (i.e., neurons) are randomly initialized in a multidimensional space; node connections are within a
-user defined parameter for maximum distance in Euclidean space.
+Implemention of a particle swarm optimized neural network on a randomly initialized graph (so many syllables!!).
+Nodes (i.e., neurons) are randomly initialized in a multidimensional Euclidean space; node connections are within a
+user defined parameter for maximum Euclidean distance.
 
 ## XOR Example
 ```
