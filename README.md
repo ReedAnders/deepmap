@@ -24,3 +24,7 @@ gbest params    :  [ -5.46520957   7.44231409  -4.60791218   3.40528773   5.2019
    7.08445254  -4.34120774  -9.40233211  11.51649327]
 iterations      :  961
 ```
+
+## TODO
+* Write more unittests to confirm outputs, not just error
+* Refactor some lists as generators (many lists, finite memory)
